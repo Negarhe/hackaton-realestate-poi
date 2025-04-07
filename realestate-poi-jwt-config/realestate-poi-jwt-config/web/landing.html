@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خدمات ملک | دیوار</title>
+    <!-- <link rel="stylesheet" href="../static/css/lading_styles.css"> -->
+     <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazir', 'Tahoma', sans-serif; }
+        body { background-color: #f9f9f9; color: #333; }
+        .container { max-width: 600px; margin: 30px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        header h1 { color: #e74c3c; margin-bottom: 8px; font-size: 22px; }
+        header p { color: #666; font-size: 14px; }
+        .service-card { background: #f9f9f9; border-radius: 8px; padding: 20px; margin-bottom: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid #eee; display: flex; align-items: center; }
+        .service-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: #e74c3c; }
+        .service-card .icon { flex: 0 0 50px; font-size: 28px; margin-left: 15px; color: #e74c3c; text-align: center; }
+        .service-card .content { flex: 1; }
+        .service-card h2 { font-size: 18px; margin-bottom: 8px; color: #333; }
+        .service-card p { font-size: 14px; color: #666; line-height: 1.4; }
+        .note { background-color: #fff8e1; padding: 12px; border-radius: 6px; margin-top: 25px; font-size: 13px; color: #795548; border-right: 3px solid #ffc107; }
+        .footer { text-align: center; font-size: 12px; color: #999; margin-top: 25px; }
+        .error-note {
+    background-color: #ffeded;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #e74c3c;
+    border-right: 3px solid #e74c3c;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+     </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>خدمات اضافی برای آگهی ملک شما</h1>
+            <p>انتخاب کنید کدام خدمت را می‌خواهید به آگهی خود اضافه کنید</p>
+        </header>
+
+        <div id="error-container" class="error-note" style="display: none;">
+            <span id="error-message"></span>
+        </div>
+
+        <div class="service-card" id="taxi-service">
+            <div class="icon">🚕</div>
+            <div class="content">
+                <h2>محاسبه کرایه تاکسی</h2>
+                <p>مسیر و هزینه تاکسی از این خانه به مقصد دلخواه را محاسبه کنید</p>
+            </div>
+        </div>
+
+        <div class="service-card" id="subway-service">
+            <div class="icon">🚇</div>
+            <div class="content">
+                <h2>افزودن نزدیکترین مترو</h2>
+                <p>اطلاعات نزدیکترین ایستگاه مترو و بیمارستان را به آگهی خود اضافه کنید</p>
+            </div>
+        </div>
+        
+        <div class="note">
+            <strong>توجه:</strong> برای استفاده از خدمت «افزودن نزدیکترین مترو»، نیاز به تایید دسترسی وجود دارد.
+        </div>
+
+        <div class="footer">
+            این افزونه برای ارتقای آگهی‌های دیوار ارائه شده است
+        </div>
+    </div>
+
+    <script>
+    
+        // These values are injected by the Go template engine
+        let divarToken = "{{with .Token}}{{.}}{{else}}{{end}}";
+        let redirectLink = "{{with .RedirectLink}}{{.}}{{else}}{{end}}";
+
+        // let divarToken = "{{.Token}}"; // Token from Divar
+        // let redirectLink = "{{.RedirectLink}}"; // Redirect link from Divar
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const isBackNavigation = urlParams.get('source') === 'back';
+
+            if (isBackNavigation) {
+                divarToken = sessionStorage.getItem('divarToken');
+                redirectLink = sessionStorage.getItem('redirectLink');
+            }else{
+                if (divarToken.includes("{{") && divarToken.includes("}}")) {
+                        divarToken = "";
+                }
+                if (redirectLink.includes("{{") && redirectLink.includes("}}")) {
+                    redirectLink = "";
+                }
+            }
+            
+            if (!divarToken) {
+                showError("توکن نامعتبر است. لطفا دوباره از دیوار وارد شوید.");
+                disableServiceCards();
+                return;
+            }
+            
+            // Validate token immediately
+            validateToken(divarToken)
+                .then(isValid => {
+                    if (isValid) {
+                        // Store tokens securely in sessionStorage
+                        sessionStorage.setItem('divarToken', divarToken);
+                        sessionStorage.setItem('redirectLink', redirectLink);
+                        console.log("Token validated and stored securely");
+                        
+                        // Enable service cards
+                        enableServiceCards();
+                    } else {
+                        console.error("Invalid token received");
+                        showError("توکن نامعتبر است. لطفا دوباره از دیوار وارد شوید.");
+                        disableServiceCards();
+                        return;
+
+
+                    }
+                })
+                .catch(error => {
+                    
+                    console.error("Error validating token:", error);
+                    showError("خطا در اعتبارسنجی توکن. لطفا دوباره تلاش کنید.");
+                    disableServiceCards();  
+                    return
+                });
+        });
+        
+        async function validateToken(token) {
+            try {
+        
+                if (!token || token === "" || (token.includes("{{") && token.includes("}}"))) {
+                    console.error("No valid token found");
+                    return false;
+                }
+                return true;
+                } catch (error) {
+                    console.error("Token validation error:", error);
+                    return false;
+                }
+            }
+        
+        // Enable service card functionality
+        function enableServiceCards() {
+            // Service selection handlers - now WITHOUT tokens in URL
+            document.getElementById('taxi-service').addEventListener('click', function() {
+                console.log(window.location.origin);
+                window.location.href = '/web/taxi.html';
+
+            });
+            
+            document.getElementById('subway-service').addEventListener('click', function() {
+                window.location.href = '/web/amenities_finder.html';
+            });
+        }
+
+        function disableServiceCards() {
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.style.opacity = '0.5';
+                card.style.cursor = 'not-allowed';
+                card.style.pointerEvents = 'none';
+                
+                // Remove any event listeners by cloning and replacing
+                const newCard = card.cloneNode(true);
+                card.parentNode.replaceChild(newCard, card);
+            });
+        }
+        
+        function showError(message) {
+    const errorContainer = document.getElementById('error-container');
+    const errorMessage = document.getElementById('error-message');
+    
+    if (errorContainer && errorMessage) {
+        errorMessage.textContent = message;
+        errorContainer.style.display = 'block';
+        
+        // Scroll to the top to ensure error is visible
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        // Fallback to alert if elements are not found
+        alert(message);
+    }
+}
+    </script>
+</body>
+</html>

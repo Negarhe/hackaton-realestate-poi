@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جستجوی امکانات نزدیک | دیوار</title>
+     <!-- Leaflet for map display -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- <link rel="stylesheet" href="./css/amenities.css"> -->
+     <style>
+        /* Base Styling */
+        /* Base Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px 0;
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #f9f7f7 100%);
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Enhanced Header Section */
+header {
+    background: linear-gradient(145deg, #ff5e54 0%, #e74c3c 100%);
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(231, 76, 60, 0.25);
+    text-align: center;
+    position: relative;
+    color: white;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ffdd59, #f39c12, #ffdd59);
+}
+
+header h1 {
+    font-size: 28px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header p {
+    color: rgba(255,255,255,0.9);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+
+.back-link {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+    padding: 8px 20px;
+    border-radius: 30px;
+    margin-top: 10px;
+    background: rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.back-link:hover {
+    background: rgba(0,0,0,0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Content Sections */
+.content-section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    position: relative;
+    border-bottom: 3px solid #ffdd59;
+}
+
+.content-section h2 {
+    color: #333;
+    font-size: 22px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ffdd59;
+}
+
+.content-section p {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+
+#status-message-container {
+    position: fixed;
+    bottom: 150px; 
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+#bottom-status-message {
+    padding: 16px 24px;
+    border-radius: 8px;
+    margin: 15px auto;
+    text-align: center;
+    font-weight: 500;
+    max-width: 80%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    pointer-events: auto;
+    opacity: 0.95;
+    transition: all 0.3s ease;
+}
+
+/* Status Messages - Redesigned */
+.status-message {
+    padding: 16px 24px;
+    border-radius: 8px;
+    margin: 15px auto;
+    text-align: center;
+    font-weight: 500;
+    max-width: 80%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    pointer-events: auto;
+}
+
+.status-message.loading {
+    background-color: #f8f9fa;
+    color: #666;
+    border-right: 4px solid #3498db;
+}
+
+.status-message.success {
+    background-color: #e7f7ef;
+    color: #27ae60;
+    border-right: 4px solid #27ae60;
+}
+
+.status-message.error {
+    background-color: #fff1f0;
+    color: #e74c3c;
+    border-right: 4px solid #e74c3c;
+}
+
+.status-message.info {
+    background-color: #fffbea;
+    color: #f39c12;
+    border-right: 4px solid #f39c12;
+}
+
+/* Property Info */
+.property-info {
+    display: flex;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    background-color: #f9f9f9;
+    padding: 12px 15px;
+    border-radius: 6px;
+}
+
+.property-info .label {
+    min-width: 100px;
+    font-weight: 600;
+    color: #555;
+}
+
+.property-info .value {
+    flex: 1;
+    color: #333;
+}
+
+/* Map Display */
+#origin-map {
+    height: 300px;
+    border-radius: 8px;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* Button Styling - Enhanced */
+.btn {
+    display: inline-block;
+    padding: 14px 26px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(145deg, #ff5e54 0%, #e74c3c 100%);
+    color: white;
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+    display: block;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.25);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(145deg, #e03529 0%, #c0392b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.35);
+}
+
+.btn-primary:disabled {
+    background-image: none;
+    background-color: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Results Area Styling - Enhanced */
+.results-area {
+    margin-top: 30px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border-bottom: 3px solid #ffdd59;
+}
+
+.results-area h3 {
+    font-size: 22px;
+    color: #222;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e74c3c;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* Category Styling - Enhanced */
+.amenity-category {
+    background-color: #fcfcfc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    border-right: 4px solid;
+    transition: transform 0.2s ease;
+}
+
+.amenity-category:hover {
+    transform: translateY(-3px);
+}
+
+/* Color-coding for different categories */
+.amenity-category:nth-child(2) {
+    border-right-color: #3498db; /* Blue for Metro */
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.amenity-category:nth-child(3) {
+    border-right-color: #f39c12; /* Orange for Bus Stations */
+    background-color: rgba(243, 156, 18, 0.05);
+}
+
+.amenity-category:nth-child(4) {
+    border-right-color: #e74c3c; /* Red for Hospitals */
+    background-color: rgba(231, 76, 60, 0.05);
+}
+
+.amenity-category:nth-child(5) {
+    border-right-color: #2ecc71; /* Green for Supermarkets */
+    background-color: rgba(46, 204, 113, 0.05);
+}
+
+.amenity-category:nth-child(6) {
+    border-right-color: #9b59b6; /* Purple for Fruit Markets */
+    background-color: rgba(155, 89, 182, 0.05);
+}
+
+.amenity-category-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+/* Items Styling - Enhanced */
+.amenity-items {
+    padding: 0 10px;
+}
+
+.amenity-item {
+    white-space: pre-line;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.amenity-item:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    border-color: #ddd;
+}
+
+/* POI styling */
+.poi-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.poi-address {
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.poi-distance {
+    color: #888;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/* Approval section */
+.results-area p[style*="font-style: italic"] {
+    margin: 30px 0 20px;
+    padding: 18px;
+    background-color: #fffbea;
+    border-radius: 10px;
+    color: #333;
+    text-align: center;
+    font-size: 15px;
+    border-right: 4px solid #ffdd59;
+}
+
+.btn-approve {
+    background: linear-gradient(145deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    width: 100%;
+    max-width: 350px;
+    margin: 20px auto 10px;
+    padding: 15px 20px;
+    display: block;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2);
+}
+
+.btn-approve:hover {
+    background: linear-gradient(145deg, #27ae60 0%, #219653 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(39, 174, 96, 0.25);
+}
+
+.btn-approve:disabled {
+    background-image: none;
+    background-color: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+/* RTL-specific adjustments */
+html[dir="rtl"] .status-message.loading,
+html[dir="rtl"] .status-message.success,
+html[dir="rtl"] .status-message.error,
+html[dir="rtl"] .status-message.info {
+    border-left: none;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    header {
+        padding: 20px 15px;
+    }
+    
+    .content-section, .results-area {
+        padding: 20px 15px;
+    }
+    
+    .btn-primary, .btn-approve {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+}
+     </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>جستجوی امکانات نزدیک</h1>
+            <p>نزدیکترین امکانات به ملک خود را پیدا کنید و به آگهی اضافه کنید</p>
+            <a href="./landing.html?source=back" class="back-link">بازگشت به صفحه اصلی</a>
+        </header>
+
+        <div class="content-section">
+            <h2>موقعیت ملک شما</h2>
+            <div class="property-info">
+                <div class="label">آدرس:</div>
+                <div class="value" id="origin-address">در حال بارگذاری...</div>
+            </div>
+            <div class="property-info">
+                <div class="label">مختصات:</div>
+                <div class="value" id="origin-coords"></div>
+            </div>
+            <div id="origin-map"></div>
+        </div>
+
+        <div class="content-section">
+            <h2>جستجوی امکانات</h2>
+            <p>با کلیک بر روی دکمه زیر، نزدیکترین امکانات به ملک شما پیدا می‌شود.</p>
+            <button class="btn btn-primary" id="find-amenities-btn">یافتن نزدیک ترین دسترسی ها</button>
+            <div id="top-status-message" class="status-message" style="display: none;"></div>
+        </div>
+
+        <div id="amenities-results" class="results-area">
+            <h3>امکانات نزدیک یافت شده:</h3>
+            <div class="amenity-item">
+                <p id="nearest-subway"><strong>ایستگاه مترو:</strong> <span></span></p>
+            </div>
+            <div class="amenity-item">
+                <p id="nearest-hospital"><strong>بیمارستان:</strong> <span></span></p>
+            </div>
+            <p style="margin-top:15px; font-style: italic;">در صورت تایید، این اطلاعات به آگهی شما اضافه خواهد شد.</p>
+            <button class="btn btn-approve" id="approve-amenities-btn">تایید و افزودن به آگهی</button>
+        </div>
+        <div id="status-message-container">
+            <div id="bottom-status-message" class="status-message" style="display: none;"></div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        let origin = null;
+        let originMap = null;
+        let postToken = null;
+        let returnUrl = null;
+
+        // DOM Elements
+        const findBtn = document.getElementById('find-amenities-btn');
+        const approveBtn = document.getElementById('approve-amenities-btn');
+        const resultsDiv = document.getElementById('amenities-results');
+        // const statusDiv = document.getElementById('status-message');
+        const originAddressEl = document.getElementById('origin-address');
+        const originCoordsEl = document.getElementById('origin-coords');
+        const originMapDiv = document.getElementById('origin-map');
+        const subwayResultEl = document.querySelector('#nearest-subway span');
+        const hospitalResultEl = document.querySelector('#nearest-hospital span');
+
+        // Get token and redirect URL from query parameters
+        function getTokenFromUrl() {
+            postToken = sessionStorage.getItem('divarToken');
+            redirectLink = sessionStorage.getItem('redirectLink');
+            if (!postToken) {
+                alert("خطا: توکن احراز هویت یافت نشد. لطفا از صفحه اصلی وارد شوید.");
+                window.location.href = './landing.html';
+                return;
+            }
+    
+        }
+        function updateTopStatus(message, type = 'info', show = true) {
+            const statusDiv = document.getElementById('top-status-message');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.style.display = show ? 'block' : 'none';
+        }
+
+        // For important messages at the bottom (errors, confirmations)
+        function updateBottomStatus(message, type = 'info', show = true) {
+            const statusDiv = document.getElementById('bottom-status-message');
+            if (!statusDiv) {
+                    console.error("Bottom status message element not found! Message was:", message);
+                    return; // Exit the function if element not found
+                }
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.style.display = show ? 'block' : 'none';
+            
+            // Auto-hide success and info messages after 5 seconds
+            if (show && (type === 'success' || type === 'info')) {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Fetch property location using token
+        async function fetchOriginCoordinates() {
+            try {
+                // Call backend API with token to get origin location
+                // In a real app, this would be a fetch to your backend
+                console.log("Fetching origin with token:", postToken);
+     
+                
+                const response = await fetch('/api/get-origin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ post_token: postToken})
+                });
+                if (response.redirected) {
+                    console.log("Redirect detected to:", response.url);
+                    window.location.href = response.url;
+                    return { ok: false };
+                }
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    if (errorData.redirect) {
+                        window.location.href = errorData.redirect;
+                        return { ok: false };
+                    }
+                    throw new Error('خطا در جستجوی امکانات نزدیک');
+                }
+                const data = await response.json();
+                return {
+                    lat: parseFloat(data.Latitude),
+                    lng: parseFloat(data.Longitude),
+                    address: data.address || "موقعیت ملک شما"
+                };
+
+            } catch (error) {
+                console.error("Error fetching origin:", error);
+                return null;
+            }
+        }
+
+        // Find nearby amenities
+        async function findNearbyPlaces(lat, lng) {
+            try {
+                updateTopStatus('در حال جستجوی نزدیکترین دسترسی ها...', 'loading');
+        
+                const response = await fetch('/api/find-amenities', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        post_token: postToken,
+                        lat: lat,
+                        lng: lng
+                    })
+                });
+                if (response.redirected) {
+                    console.log("Redirect detected to:", response.url);
+                    window.location.href = response.url;
+                    return { ok: false };
+                }
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    if (errorData.redirect) {
+                        window.location.href = errorData.redirect;
+                        return { ok: false };
+                    }
+                    throw new Error('خطا در جستجوی امکانات نزدیک');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error("Error finding amenities:", error);
+                throw error;
+            }
+        }
+
+        // Add amenities to ad
+        async function addToAd(amenitiesData) {
+            try {
+                updateBottomStatus('در حال اضافه کردن اطلاعات به آگهی شما...', 'loading');
+             
+                const response = await fetch('/api/add-to-ad', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        post_token:amenitiesData.post_token,
+                        amenities: amenitiesData.amenities
+                    })
+                });
+                if (response.redirected) {
+                    console.log("Redirect detected to:", response.url);
+                    window.location.href = response.url;
+                    return { ok: false };
+                }
+        
+                console.log("add to ad")
+                console.log(JSON.stringify({
+                        post_token:amenitiesData.post_token,
+                        amenities: amenitiesData.amenities
+                    }))
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    if (errorData.redirect) {
+                        window.location.href = errorData.redirect;
+                        return { ok: false };
+                    }
+                    throw new Error(errorData.error || 'خطا در اضافه کردن به آگهی');
+                }
+                console.log(response.statusText)
+                
+                const data =  await response.json();
+                console.log(data)
+                return { ok: true, data }; 
+            } catch (error) {
+                console.error("Error adding to ad:", error);
+                throw error;
+            }
+        }
+
+        // Display property location
+        function displayOrigin(originData) {
+            originAddressEl.textContent = originData.address;
+            originCoordsEl.textContent = `${originData.lat.toFixed(4)}, ${originData.lng.toFixed(4)}`;
+
+            // Display origin on a map
+            if (L && originMapDiv) {
+                if (originMap) originMap.remove(); // Remove previous map if exists
+                originMap = L.map(originMapDiv, { dragging: false, zoomControl: false, scrollWheelZoom: false }).setView([originData.lat, originData.lng], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(originMap);
+                L.marker([originData.lat, originData.lng]).addTo(originMap)
+                    .bindPopup("موقعیت ملک شما")
+                    .openPopup();
+            }
+        }
+        let amenitiesResults = null; // Store the results globally
+
+        function displayResults(results) {
+            console.log("Results received:", results);
+            amenitiesResults = results;
+            
+            try {
+                const resultsArea = document.getElementById('amenities-results');
+                resultsArea.innerHTML = '<h3>امکانات نزدیک یافت شده:</h3>';
+                
+                let hasAnyResults = false;
+                
+                // Function to create amenity category
+                function createAmenityCategory(type, title, pois) {
+                    if (!pois || pois.length === 0) return null;
+                    
+                    hasAnyResults = true;
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'amenity-category';
+                    
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'amenity-category-title';
+                    titleDiv.textContent = title;
+                    categoryDiv.appendChild(titleDiv);
+                    
+                    const itemsDiv = document.createElement('div');
+                    itemsDiv.className = 'amenity-items';
+                    
+                    pois.forEach((poi, index) => {
+                        // const itemDiv = document.createElement('div');
+                        // itemDiv.className = 'amenity-item';
+                        
+                        // let poiText = `${poi.name}`;
+                        // poiText += `آدرس : ${poi.address}`;
+                        // const distanceInMeters = poi.distance;
+                        // if (distanceInMeters >= 1000) {
+                        //     const km = (distanceInMeters / 1000).toFixed(1);
+                        //     poiText += `(${km} کیلومتر`;
+                        // } else {
+                        //     poiText += `(${distanceInMeters} متر`;
+                        // }
+                        
+                        // if (poi.duration) {
+                        //     poiText += ` - ${poi.duration} دقیقه با ماشین`;
+                        // }
+                        // poiText += ")";
+                        
+                        // itemDiv.textContent = poiText;
+                        // itemsDiv.appendChild(itemDiv);
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'amenity-item';
+                        
+                        // Create elements for each piece of information
+                        const nameElement = document.createElement('div');
+                        nameElement.className = 'poi-name';
+                        nameElement.textContent = poi.name;
+                        
+                        const addressElement = document.createElement('div');
+                        addressElement.className = 'poi-address';
+                        addressElement.textContent = `آدرس: ${poi.address}`;
+                        
+                        const distanceElement = document.createElement('div');
+                        distanceElement.className = 'poi-distance';
+                        
+                        // Format distance
+                        let distanceText = '';
+                        if (poi.distance >= 1000) {
+                            const km = (poi.distance / 1000).toFixed(1);
+                            distanceText = `${km} کیلومتر`;
+                        } else {
+                            distanceText = `${poi.distance} متر`;
+                        }
+                        
+                        // Add duration if available
+                        if (poi.duration) {
+                            distanceText += ` - ${poi.duration} دقیقه با ماشین`;
+                        }
+                        
+                        distanceElement.textContent = distanceText;
+                        
+                        // Add all elements to the item div
+                        itemDiv.appendChild(nameElement);
+                        itemDiv.appendChild(addressElement);
+                        itemDiv.appendChild(distanceElement);
+                        
+                        // Add the complete item to the items container
+                        itemsDiv.appendChild(itemDiv);
+                    });
+                    
+                    categoryDiv.appendChild(itemsDiv);
+                    return categoryDiv;
+                }
+                
+                // Add all POI categories
+                const categories = [
+                    { type: 'subway', title: 'مترو', data: results.subway.POIs },
+                    { type: 'bus', title: 'ایستگاه اتوبوس', data: results.bus_station.POIs },
+                    { type: 'hospital', title: 'بیمارستان', data: results.hospital. POIs},
+                    { type: 'supermarket', title: 'سوپرمارکت', data: results.super_market.POIs },
+                    { type: 'fruitmarket', title: 'میوه‌فروشی', data: results.fruit_market.POIs }
+                ];
+                
+                categories.forEach(category => {
+                    const categoryElement = createAmenityCategory(
+                        category.type, 
+                        category.title, 
+                        category.data
+                    );
+                    if (categoryElement) {
+                        resultsArea.appendChild(categoryElement);
+                    }
+                });
+                
+                // Add approval section
+                if (hasAnyResults) {
+                    const approvalNote = document.createElement('p');
+                    approvalNote.style.fontStyle = 'italic';
+                    approvalNote.style.marginTop = '15px';
+                    approvalNote.textContent = 'در صورت تایید، این اطلاعات به آگهی شما اضافه خواهد شد.';
+                    
+                    const approveBtn = document.createElement('button');
+                    approveBtn.className = 'btn btn-approve';
+                    approveBtn.id = 'approve-amenities-btn';
+                    approveBtn.textContent = 'تایید و افزودن به آگهی';
+                    approveBtn.addEventListener('click', handleApproval);
+                    
+                    resultsArea.appendChild(approvalNote);
+                    resultsArea.appendChild(approveBtn);
+                    
+                    resultsDiv.style.display = 'block';
+                    findBtn.disabled = true;
+                    updateTopStatus('امکانات نزدیک پیدا شد. لطفا بررسی و تایید کنید.', 'success');
+                } else {
+                    updateTopStatus('هیچ امکاناتی در نزدیکی این مکان یافت نشد.', 'info');
+                    resultsDiv.style.display = 'none';
+                    findBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error("Error in displayResults:", error);
+                updateTopStatus('خطا در نمایش نتایج', 'error');
+            }
+        }
+
+     
+        // Handle find amenities button click
+        function handleFindAmenities() {
+            if (!origin) {
+                updateTopStatus("موقعیت ملک هنوز بارگذاری نشده است.", 'error');
+                return;
+            }
+
+            findBtn.disabled = true; // Disable while processing
+            updateTopStatus('در حال پردازش...', 'loading');
+
+            findNearbyPlaces(origin.lat, origin.lng)
+                .then(results => {
+                    displayResults(results);
+                })
+                .catch(error => {
+                    console.error("Error finding amenities:", error);
+                    updateTopStatus(`خطا: ${error.message || 'خطا در جستجوی امکانات نزدیک'}`, 'error');
+                    findBtn.disabled = false; 
+                    setTimeout(() => {}, 1000);});
+        }
+
+        function handleApproval() {
+                if (!amenitiesResults) {
+                    console.warn("No results to approve");
+                    return;
+                }
+                
+                const approveBtn = document.getElementById('approve-amenities-btn');
+                approveBtn.disabled = true;
+
+                const amenityData = {
+                    post_token: postToken,
+                    amenities: amenitiesResults
+                };
+                // console.log(amenityData.amenities)
+
+                addToAd(amenityData)
+                    .then(response => {
+                        if (response.ok) {
+                            updateBottomStatus('اطلاعات با موفقیت به آگهی شما اضافه شد!', 'success');
+                            approveBtn.disabled = true; 
+
+                            if (returnUrl) {
+                                setTimeout(() => window.location.href = returnUrl, 2000);
+                            }
+                        } else {
+                            throw new Error('Failed to add amenities');
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error adding to ad:", error);
+                        updateBottomStatus('خطا در اضافه کردن به آگهی. لطفا دوباره تلاش کنید.', 'error');
+                        approveBtn.disabled = false;
+                        return
+                    });
+            }
+
+
+        // Page initialization
+        window.onload = () => {
+            console.log("Page loaded. Initializing...");
+            getTokenFromUrl();
+            updateTopStatus("در حال بارگذاری موقعیت ملک...", 'loading');
+            
+            fetchOriginCoordinates()
+                .then(originData => {
+                    if (!originData) {
+                        throw new Error("خطا در دریافت موقعیت ملک");
+                    }
+                    origin = originData;
+                    displayOrigin(origin);
+                    findBtn.disabled = false; // Enable button once origin is loaded
+                    updateTopStatus("موقعیت ملک بارگذاری شد. آماده جستجوی امکانات نزدیک.", 'info');
+                })
+                .catch(error => {
+                    console.error("Failed to fetch origin on load:", error);
+                    originAddressEl.textContent = "خطا در بارگذاری موقعیت ملک";
+                    updateTopStatus("خطا در بارگذاری موقعیت ملک. لطفا صفحه را دوباره بارگذاری کنید.", 'error');
+                    findBtn.disabled = true;
+                });
+
+            // Event Listeners
+            findBtn.addEventListener('click', handleFindAmenities);
+            approveBtn.addEventListener('click', handleApproval);
+
+            // Initial state
+            findBtn.disabled = true; // Disabled until origin loads
+            approveBtn.disabled = true;
+            resultsDiv.style.display = 'none';
+        };
+    </script>
+</body>
+</html>

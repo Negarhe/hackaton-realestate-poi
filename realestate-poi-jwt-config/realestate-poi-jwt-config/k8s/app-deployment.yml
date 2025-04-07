@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realestate-poi-deployment
+  labels:
+    app: realestate-poi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: realestate-poi
+  template:
+    metadata:
+      labels:
+        app: realestate-poi
+    spec:
+      containers:
+      - name: realestate-poi-container
+        image: realestate-poi:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secret
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+      
+    
+
+    

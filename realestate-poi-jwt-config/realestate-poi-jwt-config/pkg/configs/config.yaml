@@ -1,0 +1,46 @@
+Database:
+  Host: ${DB_HOST}
+  Port: ${DB_PORT}
+  DBName: ${DB_NAME}
+  Username: ${DB_USERNAME}
+  Password: ${DB_PASSWORD}
+  MaxConns: 5
+  MinConns: 2
+  MaxConnLifetimeJitterMinutes: 1
+  MaxConnLifetimeMinutes: 5
+  MaxConnIdleTimeMinutes: 2
+  SSLMode: disable
+Kenar:
+  KenarAppSlug: "${KENAR_APP_SLUG}"  
+  KenarApiKey: "${KENAR_API_KEY}"
+  OauthSecret: "${OAUTH_SECRET}"
+  BaseUrl:
+
+Server:
+  Port: "${PORT}"
+
+Session:
+  SessionAuthKey: "${SESSION_AUTH_KEY}"
+
+Neshan:
+  NeshanApiKey: "${NESHAN_API_KEY}"
+  
+snapp:
+  access_token:  "${SNAPP_ACCESS_TOKEN}"
+  cookie_session: "${SNAPP_COOKIE_SESSION}"
+  clck: "${SNAPP_CLCK}"
+  clsk: "${SNAPP_CLSK}"
+  ga: "${SNAPP_GA}"
+  ga_tracking: "${SNAPP_GA_TRACKING}"
+  ym_d: "${SNAPP_YM_D}"
+  ym_isad: "${SNAPP_YM_ISAD}"
+  ym_uid: "${SNAPP_YM_UID}"
+
+tapsi:
+  access_token: "${TAPSI_ACCESS_TOKEN}"
+  refresh_token: "${TAPSI_REFRESH_TOKEN}"
+  clck: "${TAPSI_CLCK}"
+  clsk: "${TAPSI_CLSK}"
+
+Jwt:
+  JwtSecret: "${JWT_SECRET}"

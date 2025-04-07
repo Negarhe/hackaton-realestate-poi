@@ -1,0 +1,418 @@
+/* Base Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Improved Header Section */
+header {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.07);
+    text-align: center;
+    position: relative;
+}
+
+header h1 {
+    color: #e74c3c;
+    font-size: 26px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+}
+
+header h1::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 3px;
+    background-color: #e74c3c;
+    margin: 12px auto 0;
+    border-radius: 2px;
+}
+
+header p {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+
+.back-link {
+    display: inline-block;
+    color: #e74c3c;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+    padding: 8px 16px;
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.back-link:hover {
+    background-color: #e74c3c;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(231, 76, 60, 0.15);
+}
+
+/* Responsive adjustments for header */
+@media screen and (max-width: 768px) {
+    header {
+        padding: 25px 20px;
+    }
+    
+    header h1 {
+        font-size: 22px;
+    }
+    
+    header p {
+        font-size: 14px;
+    }
+}
+
+/* Content Sections */
+.content-section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.content-section h2 {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e74c3c;
+}
+
+.content-section p {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+/* Property Info */
+.property-info {
+    display: flex;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+}
+
+.property-info .label {
+    min-width: 100px;
+    font-weight: 600;
+    color: #666;
+}
+
+.property-info .value {
+    flex: 1;
+    color: #333;
+}
+
+/* Map Display */
+#origin-map {
+    height: 300px;
+    border-radius: 8px;
+    margin-top: 15px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+/* Button Styling */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #e74c3c;
+    color: white;
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+    display: block;
+}
+
+.btn-primary:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:disabled {
+    background-color: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Status Messages */
+.status-message {
+    padding: 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+    text-align: center;
+    font-weight: 500;
+}
+
+.status-message.loading {
+    background-color: #f8f9fa;
+    color: #666;
+    border-left: 4px solid #3498db;
+}
+
+.status-message.success {
+    background-color: #e7f7ef;
+    color: #27ae60;
+    border-left: 4px solid #27ae60;
+}
+
+.status-message.error {
+    background-color: #fdf2f2;
+    color: #e74c3c;
+    border-left: 4px solid #e74c3c;
+}
+
+.status-message.info {
+    background-color: #ebf7fd;
+    color: #3498db;
+    border-left: 4px solid #3498db;
+}
+
+/* Results Area Styling - Enhanced */
+.results-area {
+    margin-top: 25px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.results-area h3 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e74c3c;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* Category Styling - Enhanced */
+.amenity-category {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-right: 4px solid;
+}
+
+/* Color-coding for different categories */
+.amenity-category:nth-child(2) {
+    border-right-color: #3498db; /* Blue for Metro */
+}
+
+.amenity-category:nth-child(3) {
+    border-right-color: #f39c12; /* Orange for Bus Stations */
+}
+
+.amenity-category:nth-child(4) {
+    border-right-color: #e74c3c; /* Red for Hospitals */
+}
+
+.amenity-category:nth-child(5) {
+    border-right-color: #2ecc71; /* Green for Supermarkets */
+}
+
+.amenity-category:nth-child(6) {
+    border-right-color: #9b59b6; /* Purple for Fruit Markets */
+}
+
+.amenity-category-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+/* Color-coding for category titles */
+.amenity-category:nth-child(2) .amenity-category-title {
+    color: #3498db; /* Blue for Metro */
+}
+
+.amenity-category:nth-child(3) .amenity-category-title {
+    color: #f39c12; /* Orange for Bus Stations */
+}
+
+.amenity-category:nth-child(4) .amenity-category-title {
+    color: #e74c3c; /* Red for Hospitals */
+}
+
+.amenity-category:nth-child(5) .amenity-category-title {
+    color: #2ecc71; /* Green for Supermarkets */
+}
+
+.amenity-category:nth-child(6) .amenity-category-title {
+    color: #9b59b6; /* Purple for Fruit Markets */
+}
+
+/* Items Styling - Enhanced */
+.amenity-items {
+    padding: 0 10px;
+}
+
+.amenity-item {
+    white-space: pre-line;
+    /* line-height: 1.6; */
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    position: relative;
+}
+
+.amenity-item:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+
+.amenity-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Name and distance formatting */
+.amenity-item strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+.amenity-item span.distance {
+    color: #666;
+    font-size: 14px;
+    display: block;
+    margin-top: 5px;
+}
+
+.amenity-item span.duration {
+    color: #888;
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* Approval section - Enhanced */
+.results-area p[style*="font-style: italic"] {
+    margin: 30px 0 20px;
+    padding: 18px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    color: #555;
+    text-align: center;
+    font-size: 15px;
+    border-right: 4px solid #95a5a6;
+}
+
+.btn-approve {
+    background-color: #27ae60;
+    color: white;
+    width: 100%;
+    max-width: 350px;
+    margin: 20px auto 10px;
+    padding: 15px 20px;
+    display: block;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 3px 8px rgba(39, 174, 96, 0.2);
+}
+
+.btn-approve:hover {
+    background-color: #219653;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(39, 174, 96, 0.25);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    header {
+        padding: 20px 15px;
+    }
+    
+    .back-link {
+        position: static;
+        display: block;
+        margin-top: 15px;
+    }
+    
+    .content-section, .results-area {
+        padding: 20px 15px;
+    }
+    
+    #origin-map {
+        height: 250px;
+    }
+    
+    .amenity-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* RTL-specific adjustments */
+html[dir="rtl"] .status-message.loading,
+html[dir="rtl"] .status-message.success,
+html[dir="rtl"] .status-message.error,
+html[dir="rtl"] .status-message.info {
+    border-left: none;
+    border-right: 4px solid;
+}
+
+html[dir="rtl"] .back-link {
+    left: auto;
+    right: 25px;
+}

@@ -1,0 +1,720 @@
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اطلاعات تکمیلی ملک | دیوار</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Vazir', 'Tahoma', sans-serif; 
+        }
+        
+        body { 
+            background-color: #f9f9f9; 
+            color: #333; 
+        }
+        
+        .container { 
+            max-width: 600px; 
+            margin: 30px auto; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        
+        header { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            padding-bottom: 15px; 
+            border-bottom: 1px solid #eee; 
+        }
+        
+        header h1 { 
+            color: #e74c3c; 
+            margin-bottom: 8px; 
+            font-size: 22px; 
+        }
+        
+        header p { 
+            color: #666; 
+            font-size: 14px; 
+        }
+        
+        .service-card { 
+            background: #f9f9f9; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 15px;
+            border: 1px solid #eee; 
+            display: flex; 
+            flex-wrap: wrap; /* Allow wrapping for button row */
+            align-items: flex-start; 
+            position: relative;
+        }
+        
+        /* Matte style initially */
+        .service-card.matte {
+            cursor: default;
+            background: #f5f5f5;
+            border-color: #ddd;
+        }
+        
+        /* Interactive style for active cards */
+        .service-card.interactive {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .service-card.interactive:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            border-color: #e74c3c; 
+        }
+        
+        .service-card .icon { 
+            flex: 0 0 50px; 
+            font-size: 28px; 
+            margin-left: 15px; 
+            color: #e74c3c; 
+            text-align: center; 
+        }
+        
+        .service-card .content { 
+            flex: 1; 
+            text-align: right;
+        }
+        
+        .service-card h2 { 
+            font-size: 18px; 
+            margin-bottom: 8px; 
+            color: #333; 
+        }
+        
+        .service-card p { 
+            font-size: 14px; 
+            color: #666; 
+            line-height: 1.4; 
+        }
+        
+        /* New button container for full width */
+        .button-container {
+            flex-basis: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .price-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .free-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .note { 
+            background-color: #fff8e1; 
+            padding: 12px; 
+            border-radius: 6px; 
+            margin-top: 25px; 
+            font-size: 13px; 
+            color: #795548; 
+            border-right: 3px solid #ffc107; 
+        }
+        
+        .footer { 
+            text-align: center; 
+            font-size: 12px; 
+            color: #999; 
+            margin-top: 25px; 
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #e74c3c;
+            text-decoration: none;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .feature-list {
+            margin-top: 10px;
+        }
+        
+        .feature-item {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-item:before {
+            content: "✓";
+            color: #e74c3c;
+            margin-left: 6px;
+            font-size: 11px;
+        }
+
+        .view-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 25px;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-block;
+            transition: background-color 0.2s;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+        }
+        
+        .view-button:hover {
+            background-color: #c0392b;
+        }
+        
+        .view-button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        /* Results section styling */
+        .results-container {
+            display: none;
+            flex-basis: 100%;
+            background-color: #f1f8ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #c9e3ff;
+            text-align: right;
+        }
+        
+        .results-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #c9e3ff;
+            padding-bottom: 12px;
+        }
+        
+        .results-icon {
+            font-size: 22px;
+            margin-left: 10px;
+            color: #3498db;
+        }
+        
+        .results-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .amenity-category {
+            margin-bottom: 15px;
+        }
+        
+        .amenity-category-title {
+            background-color: #e8f4fd;
+            padding: 8px 12px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            color: #2980b9;
+        }
+        
+        .amenity-items {
+            margin-right: 15px;
+        }
+        
+        .amenity-item {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+            margin-bottom: 5px;
+        }
+        
+        .amenity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .poi-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .poi-address {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 3px;
+        }
+        
+        .poi-distance {
+            font-size: 12px;
+            color: #e74c3c;
+        }
+        
+        .status-message {
+            text-align: center;
+            margin: 15px auto; /* Change to auto for horizontal centering */
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+            max-width: 80%; /* Limit width */
+            width: fit-content; /* Make it only as wide as needed */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Add subtle shadow */
+        }
+
+        .status-success {
+            background-color: #e8f5e9;
+            color: #27ae60;
+            display: block;
+            font-weight: bold; /* Make it more prominent */
+        }
+                
+     
+        
+        .status-loading {
+            background-color: #f1f8ff;
+            color: #3498db;
+            display: block;
+        }
+        
+        .status-success {
+            background-color: #e8f5e9;
+            color: #27ae60;
+            display: block;
+        }
+        
+        .status-error {
+            background-color: #fdecea;
+            color: #e74c3c;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>اطلاعات تکمیلی ملک</h1>
+            <p>برای مشاهده جزئیات بیشتر درباره این ملک، یکی از خدمات زیر را انتخاب کنید</p>
+        </header>
+
+        <div class="service-card interactive" id="taxi-service">
+            <div class="icon">🚕</div>
+            <div class="content">
+                <h2>اطلاعات تاکسی و حمل و نقل</h2>
+                <p>هزینه و زمان سفر با تاکسی از این ملک به نقاط مختلف شهر</p>
+                <div class="feature-list">
+                    <div class="feature-item">قیمت تخمینی تاکسی‌های آنلاین</div>
+                    <div class="feature-item">زمان رسیدن به مقاصد مهم</div>
+                </div>
+            </div>
+            <div class="free-tag">رایگان</div>
+        </div>
+
+        <div class="service-card matte" id="subway-card">
+            <div class="icon">🚇</div>
+            <div class="content">
+                <h2>دسترسی به مترو و امکانات شهری</h2>
+                <p>اطلاعات کامل فاصله این ملک تا ایستگاه مترو و امکانات شهری</p>
+                <div class="feature-list">
+                    <div class="feature-item">فاصله دقیق تا نزدیک‌ترین ایستگاه مترو</div>
+                    <div class="feature-item">فاصله تا مراکز درمانی و خرید</div>
+                </div>
+            </div>
+            
+            <!-- Button in its own container for full width centering -->
+            <div class="button-container">
+                <button class="view-button" id="subway-button">مشاهده اطلاعات</button>
+            </div>
+            
+            <!-- Status message -->
+            <div class="status-message" id="status-message"></div>
+            
+            <!-- Results Container -->
+            <div id="amenities-results" class="results-container"></div>
+            
+            <div class="price-tag">۱۹,۰۰۰ تومان</div>
+        </div>
+        
+        <div class="note">
+            <strong>توجه:</strong> سرویس تاکسی به صورت رایگان و سرویس اطلاعات مترو به صورت پرمیوم در دسترس است.
+        </div>
+
+        <div class="footer">
+            این افزونه برای ارتقای تجربه کاربری آگهی‌های دیوار ارائه شده است
+            <br>
+            <a href="#" onclick="window.history.back()" class="back-link">بازگشت به آگهی</a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        const statusElement = document.getElementById('status-message');
+
+
+            const serverData = {
+                postToken: "{{if .PostToken}}{{.PostToken}}{{end}}",
+                property: {
+                    title: "{{if .PropertyData.Title}}{{.PropertyData.Title}}{{end}}",
+                    latitude: "{{if .PropertyData.Latitude}}{{.PropertyData.Latitude}}{{else}}null{{end}}",
+                    longitude: "{{if .PropertyData.Longitude}}{{.PropertyData.Longitude}}{{else}}null{{end}}"
+                },
+                isPurchased: "{{if .IsPurchased}}{{.IsPurchased}}{{else}}false{{end}}"
+
+            };
+
+    // Fallback to URL parameters if server data is missing
+        const postToken = serverData.postToken|| '';
+        let propertyLat = serverData.property.latitude;
+        let propertyLng = serverData.property.longitude;
+        const isPurchased = (serverData.isPurchased === "true" || serverData.isPurchased === true);
+
+        
+        // Validate we have what we need
+        const hasValidCoordinates = (
+            propertyLat !== null && 
+            propertyLng !== null && 
+            !isNaN(propertyLat) && 
+            !isNaN(propertyLng)
+        );
+        if (!postToken) {
+            updateStatusMessage('خطا: شناسه آگهی یافت نشد. لطفا مجددا آگهی را باز کنید.', 'error');
+            disableAllFunctionality();
+        } else if (!hasValidCoordinates) {
+            updateStatusMessage('خطا: مختصات ملک معتبر نیست. امکان نمایش اطلاعات وجود ندارد.', 'error');
+            disableAllFunctionality();
+        }        
+        if (isPurchased) {
+            document.addEventListener('DOMContentLoaded', function() {
+                // Update UI to show already purchased
+                const priceTag = document.querySelector('.price-tag');
+                priceTag.innerHTML = "خریداری شده";
+                priceTag.style.backgroundColor = "#27ae60";
+                
+                // Change button text and remove matte style
+                const subwayButton = document.getElementById('subway-button');
+                subwayButton.innerHTML = "مشاهده اطلاعات";
+                
+                const subwayCard = document.getElementById('subway-card');
+                subwayCard.classList.remove('matte');
+                subwayCard.classList.add('interactive');
+                
+                // Automatically fetch and display content
+                fetchAmenitiesData();
+        });
+        }
+        // const postToken = new URLSearchParams(window.location.search).get('post_token') || 'default_token';
+        let amenitiesResults = null;
+        
+        // Service selection handlers
+        document.getElementById('taxi-service').addEventListener('click', function() {
+            window.location.href = `/static/taxi.html?post_token=${encodeURIComponent(postToken)}`;
+        });
+
+        function disableAllFunctionality() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+            
+            const interactiveCards = document.querySelectorAll('.interactive');
+            interactiveCards.forEach(card => {
+                card.classList.remove('interactive');
+                card.classList.add('matte');
+            });
+        }
+
+        
+        // Status update function
+        function updateStatusMessage(message, type) {
+            statusElement.textContent = message;
+            statusElement.className = 'status-message';
+            
+            if (type === 'loading') {
+                statusElement.classList.add('status-loading');
+            } else if (type === 'success') {
+                statusElement.classList.add('status-success');
+            } else if (type === 'error') {
+                statusElement.classList.add('status-error');
+            }
+            
+            // Always make sure the status is visible
+            statusElement.style.display = 'block';
+        }
+
+        async function recordPurchase() {
+            try {
+                updateStatusMessage('در حال ثبت خرید...', 'loading');
+                
+                const response = await fetch('/api/record-purchase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        post_token: postToken,
+                    })
+                });
+                if (response.redirected) {
+                    console.log("Redirect detected to:", response.url);
+                    window.location.href = response.url;
+                    return { ok: false };
+                }
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    if (errorData.redirect) {
+                        window.location.href = errorData.redirect;
+                        return { ok: false };
+                    }
+                    throw new Error('خطا در ثبت خرید');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error("Error recording purchase:", error);
+                updateStatusMessage('خطا در ثبت خرید. لطفا مجددا تلاش کنید.', 'error');
+                throw error;
+            }
+        }
+
+        // Function to find nearby amenities
+        async function findNearbyPlaces() {
+            try {
+                updateStatusMessage('در حال جستجوی نزدیکترین دسترسی ها...', 'loading');
+                
+                // Use the property coordinates that were injected at the beginning of the script
+                if (!hasValidCoordinates) {
+                    throw new Error('مختصات ملک معتبر نیست');
+                }
+                
+                const response = await fetch('/api/find-amenities', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        post_token: postToken,
+                        lat: parseFloat(propertyLat),
+                        lng: parseFloat(propertyLng)
+                    })
+                });
+                if (response.redirected) {
+                    console.log("Redirect detected to:", response.url);
+                    window.location.href = response.url;
+                    return { ok: false };
+                }
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    if (errorData.redirect) {
+                        window.location.href = errorData.redirect;
+                        return { ok: false };
+                    }
+                    throw new Error('خطا در جستجوی امکانات نزدیک');
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Error finding amenities:", error);
+            }
+        }
+        
+        
+        // Display results function
+        function displayResults(results) {
+            console.log("Results received:", results);
+            
+            try {
+                if (!results) {
+                       throw new Error('داده‌ای برای نمایش وجود ندارد');
+                }
+                amenitiesResults = results;
+                const resultsArea = document.getElementById('amenities-results');
+                resultsArea.innerHTML = '';
+                
+                // Add results header
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'results-header';
+                
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'results-icon';
+                iconDiv.textContent = '🚇';
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'results-title';
+                titleDiv.textContent = 'امکانات نزدیک یافت شده:';
+                
+                headerDiv.appendChild(iconDiv);
+                headerDiv.appendChild(titleDiv);
+                resultsArea.appendChild(headerDiv);
+                
+                let hasAnyResults = false;
+                
+                // Function to create amenity category
+                function createAmenityCategory(type, title, pois) {
+                    if (!pois || pois.length === 0) return null;
+                    
+                    hasAnyResults = true;
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'amenity-category';
+                    
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'amenity-category-title';
+                    titleDiv.textContent = title;
+                    categoryDiv.appendChild(titleDiv);
+                    
+                    const itemsDiv = document.createElement('div');
+                    itemsDiv.className = 'amenity-items';
+                    
+                    pois.forEach(poi => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'amenity-item';
+                        
+                        // Create elements for each piece of information
+                        const nameElement = document.createElement('div');
+                        nameElement.className = 'poi-name';
+                        nameElement.textContent = poi.name;
+                        
+                        const addressElement = document.createElement('div');
+                        addressElement.className = 'poi-address';
+                        addressElement.textContent = `آدرس: ${poi.address}`;
+                        
+                        const distanceElement = document.createElement('div');
+                        distanceElement.className = 'poi-distance';
+                        
+                        // Format distance
+                        let distanceText = '';
+                        if (poi.distance >= 1000) {
+                            const km = (poi.distance / 1000).toFixed(1);
+                            distanceText = `${km} کیلومتر`;
+                        } else {
+                            distanceText = `${poi.distance} متر`;
+                        }
+                        
+                        // Add duration if available
+                        if (poi.duration) {
+                            distanceText += ` - ${poi.duration} دقیقه با ماشین`;
+                        }
+                        
+                        distanceElement.textContent = distanceText;
+                        
+                        // Add all elements to the item div
+                        itemDiv.appendChild(nameElement);
+                        itemDiv.appendChild(addressElement);
+                        itemDiv.appendChild(distanceElement);
+                        
+                        // Add the complete item to the items container
+                        itemsDiv.appendChild(itemDiv);
+                    });
+                    
+                    categoryDiv.appendChild(itemsDiv);
+                    return categoryDiv;
+                }
+                
+                // Add all POI categories
+                const categories = [
+                    { type: 'subway', title: 'مترو', data: results.subway.POIs },
+                    { type: 'bus', title: 'ایستگاه اتوبوس', data: results.bus_station.POIs },
+                    { type: 'hospital', title: 'بیمارستان', data: results.hospital.POIs },
+                    { type: 'supermarket', title: 'سوپرمارکت', data: results.super_market.POIs },
+                    { type: 'fruitmarket', title: 'میوه‌فروشی', data: results.fruit_market.POIs }
+                ];
+                
+                categories.forEach(category => {
+                    const categoryElement = createAmenityCategory(
+                        category.type, 
+                        category.title, 
+                        category.data
+                    );
+                    if (categoryElement) {
+                        resultsArea.appendChild(categoryElement);
+                    }
+                });
+                
+                if (hasAnyResults) {
+                    resultsArea.style.display = 'block';
+                    // Success message without requiring review or confirmation
+                    updateStatusMessage('اطلاعات با موفقیت نمایش داده شد', 'success');
+                } else {
+                    updateStatusMessage('هیچ امکاناتی در نزدیکی این مکان یافت نشد.', 'error');
+                    resultsArea.style.display = 'none';
+                }
+            } catch (error) {
+                console.error("Error in displayResults:", error);
+                updateStatusMessage('خطا در نمایش نتایج', 'error');
+                resultsArea.style.display = 'none';
+            }
+        }
+
+        // The button shows metro info directly on this page
+        document.getElementById('subway-button').addEventListener('click', async function() {
+            // Verify we have a valid token before proceeding
+            if (!postToken) {
+                updateStatusMessage('خطا: اطلاعات ملک در دسترس نیست', 'error');
+                return;
+            }
+            
+            // Show loading state
+            this.innerHTML = "در حال بارگذاری...";
+            this.disabled = true;
+            
+            try {
+                if (!isPurchased) {
+                    const purchaseResult = await recordPurchase();
+                    if (purchaseResult && purchaseResult.ok === false) {
+                        return;
+                    }
+                }
+                // Get the amenities data
+                const results = await findNearbyPlaces();
+                
+                // Display the results
+                displayResults(results);
+                
+                // Make the card interactive (NOT matte anymore)
+                const subwayCard = document.getElementById('subway-card');
+                subwayCard.classList.remove('matte');
+                subwayCard.classList.add('interactive');
+                
+                // Update button
+                this.innerHTML = "اطلاعات نمایش داده شد";
+                
+                // Change price tag to show it's purchased
+                const priceTag = document.querySelector('.price-tag');
+                priceTag.innerHTML = "خریداری شده";
+                priceTag.style.backgroundColor = "#27ae60";
+                
+            } catch (error) {
+                console.error("Error:", error);
+                this.disabled = false;
+                this.innerHTML = "تلاش مجدد";
+                updateStatusMessage('خطا در دریافت اطلاعات. لطفا مجددا تلاش کنید.', 'error');
+            }
+        });
+    
+    </script>
+</body>
+</html>

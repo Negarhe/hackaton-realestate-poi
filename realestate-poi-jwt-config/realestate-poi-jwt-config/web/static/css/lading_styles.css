@@ -1,0 +1,14 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazir', 'Tahoma', sans-serif; }
+body { background-color: #f9f9f9; color: #333; }
+.container { max-width: 600px; margin: 30px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+header h1 { color: #e74c3c; margin-bottom: 8px; font-size: 22px; }
+header p { color: #666; font-size: 14px; }
+.service-card { background: #f9f9f9; border-radius: 8px; padding: 20px; margin-bottom: 15px; cursor: pointer; transition: all 0.2s; border: 1px solid #eee; display: flex; align-items: center; }
+.service-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: #e74c3c; }
+.service-card .icon { flex: 0 0 50px; font-size: 28px; margin-left: 15px; color: #e74c3c; text-align: center; }
+.service-card .content { flex: 1; }
+.service-card h2 { font-size: 18px; margin-bottom: 8px; color: #333; }
+.service-card p { font-size: 14px; color: #666; line-height: 1.4; }
+.note { background-color: #fff8e1; padding: 12px; border-radius: 6px; margin-top: 25px; font-size: 13px; color: #795548; border-right: 3px solid #ffc107; }
+.footer { text-align: center; font-size: 12px; color: #999; margin-top: 25px; }

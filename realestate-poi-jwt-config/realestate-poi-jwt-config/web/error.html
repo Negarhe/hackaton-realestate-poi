@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} | دیوار</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        :root {
+            --primary-color: #a62626;
+            --primary-hover: #8f1f1f;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --border-color: #eaeaea;
+            --technical-bg: #f5f5f5;
+            --technical-border: #e0e0e0;
+            --technical-text: #555;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            line-height: 1.6;
+        }
+        
+        .error-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        .logo img {
+            height: 32px;
+        }
+        
+        .error-icon {
+            font-size: 54px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+        
+        .error-title {
+            color: var(--primary-color);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .error-message {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+        
+        .error-description {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        
+        .error-code {
+            display: inline-block;
+            background-color: rgba(166, 38, 38, 0.1);
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .technical-details {
+            background-color: var(--technical-bg);
+            border: 1px solid var(--technical-border);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 24px;
+            text-align: left;
+            direction: ltr;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--technical-text);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .technical-title {
+            color: var(--text-light);
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-align: center;
+            direction: rtl;
+            font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(166, 38, 38, 0.05);
+        }
+        
+        @media (max-width: 480px) {
+            .error-container {
+                padding: 24px 16px;
+            }
+            
+            .error-icon {
+                font-size: 48px;
+            }
+            
+            .error-title {
+                font-size: 20px;
+            }
+            
+            .error-message {
+                font-size: 15px;
+            }
+            
+            .error-description {
+                font-size: 13px;
+            }
+            
+            .btn {
+                font-size: 13px;
+                padding: 8px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="logo">
+            <img src="/web/static/divar-logo.jpg" alt="دیوار">
+        </div>
+        
+        <div class="error-icon">
+            {{if eq .StatusCode 400}}⚠️{{else if eq .StatusCode 401}}🔒{{else if eq .StatusCode 403}}🚫{{else if eq .StatusCode 404}}🔍{{else}}❌{{end}}
+        </div>
+        
+        <h1 class="error-title">{{.Title}}</h1>
+        
+        <p class="error-message">{{.Message}}</p>
+        
+        {{if .Description}}
+        <p class="error-description">{{.Description}}</p>
+        {{end}}
+        
+        <div class="error-code">کد خطا: {{.StatusCode}}</div>
+        
+        {{if .TechnicalError}}
+        <div class="technical-title">جزئیات فنی خطا:</div>
+        <div class="technical-details">{{.TechnicalError}}</div>
+        {{end}}
+        
+        <div class="action-buttons">
+            <a href="https://open-platform-redirect.divar.ir/completion" class="btn btn-primary">بازگشت</a>
+        </div>
+    </div>
+</body>
+</html>
